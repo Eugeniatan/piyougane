@@ -861,12 +861,12 @@ li.sale-noti>a {
   -o-transition: all 0.3s;
   -moz-transition: all 0.3s;
 
-  transform-origin: top right;
-  -webkit-transform: scale(0);
+   transform-origin: top right;
+  /*-webkit-transform: scale(0);
   -moz-transform: scale(0);
   -ms-transform: scale(0);
   -o-transform: scale(0);
-  transform: scale(0);
+  transform: scale(0); */
 }
 
 .show-header-dropdown {
@@ -1076,8 +1076,8 @@ li.sale-noti>a {
 .wrap-side-menu {
   width: 100%;
   background-color: white;
-  display: none;
   border-top: 1px solid #ececec;
+  transition:.3s;
 }
 
 .side-menu {
@@ -1144,7 +1144,6 @@ li.sale-noti>a {
 
 .side-menu .sub-menu>li {
   padding-left: 12px;
-  padding-top:
 }
 
 .side-menu .sub-menu a:hover {
@@ -2448,22 +2447,26 @@ input.num-product::-webkit-inner-spin-button {
 }
 
 .registerPage {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 300px;
+  background: #fff;
+  border:2px solid #333;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   flex-direction: column;
+  position: absolute;
+  margin-top: 200px;
+  padding: 10px 0;
+  transition:.3s;
+  transform-origin: top;
 }
 
 .registerPage p {
-  font-size: 3rem;
   font-weight: bold;
 }
 
 .registerPage form {
-  width: 50%;
-  height: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -2472,7 +2475,6 @@ input.num-product::-webkit-inner-spin-button {
 .registerPage form input {
   border-bottom: 2px solid #999 !important;
   transition: .3s;
-  width: 300px;
   margin: 10px auto;
   padding: 5px 5px;
 }
@@ -2481,20 +2483,14 @@ input.num-product::-webkit-inner-spin-button {
   border-bottom: 2px solid #333 !important;
 }
 
-.btnSign {
-  display: flex;
-  justify-content: space-around;
-  width: 300px;
-  margin: 20px auto;
-}
-
-.btnSign button {
+.registerPage button {
   border: 2px solid #333;
   padding: 10px 20px;
   transition: .3s;
+  margin-top: 10px;
 }
 
-.btnSign button:hover {
+.registerPage button:hover {
   color: #fff;
   background: #333;
 }
