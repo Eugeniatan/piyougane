@@ -1,5 +1,6 @@
 class Navbar extends React.Component {
     state = {
+        loading: false,
         cartScale: false,
         registerScale: false,
         signInScale: false,
@@ -9,10 +10,28 @@ class Navbar extends React.Component {
         inputEmailRegister: '',
         inputPasswordRegister: '',
         inputNameRegister: '',
+        inputPhoneRegister: '',
         //sign in input,
         inputEmailSignin: '',
-        inputPasswordSignin: ''
+        inputPasswordSignin: '',
+        //profile
+        profileScale: false,
+        username: ''
     }
+
+    componentDidMount() {
+        this.onStateChange();
+    }
+
+    onStateChange = () => {
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                this.setState({ username: firebase.auth().currentUser.displayName, isLogin: true, profileScale: false, inputEmailSignin: '', inputPasswordSignin: '', inputNameRegister: '', inputPhoneRegister: '' });
+            } else {
+                this.setState({ isLogin: false });
+            }
+        });
+    };
 
     registerOnChange = (e) => {
         this.setState({
@@ -24,7 +43,25 @@ class Navbar extends React.Component {
 
     submitRegister = (e) => {
         e.preventDefault();
-        console.log(this.state.inputPasswordRegister, this.state.inputNameRegister)
+        if (this.state.inputEmailRegister === '' || this.state.inputPasswordRegister === '' || this.state.inputNameRegister === '' || this.state.inputPhoneRegister === '') {
+            alert('All field must be filled');
+        } else {
+            this.setState({ loading: true });
+            firebase.auth().createUserWithEmailAndPassword(this.state.inputEmailRegister, this.state.inputPasswordRegister)
+                .then(() => {
+                    var user = firebase.auth().currentUser;
+                    user.updateProfile({
+                        displayName: this.state.inputNameRegister
+                    });
+                    this.setState({ loading: false, username: this.state.inputNameRegister });
+                })
+                .catch((error) => {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    this.setState({ loading: false });
+                    alert(errorCode, errorMessage);
+                });
+        }
     };
 
     signInOnChange = (e) => {
@@ -38,12 +75,36 @@ class Navbar extends React.Component {
 
     submitSignin = (e) => {
         e.preventDefault();
-        console.log(this.state.inputEmailSignin, this.state.inputPasswordSignin)
+        this.setState({ loading: true });
+        const { inputEmailSignin, inputPasswordSignin } = this.state;
+        firebase.auth().signInWithEmailAndPassword(inputEmailSignin, inputPasswordSignin)
+            .then(() => {
+                this.setState({ loading: false });
+            })
+            .catch((error) => {
+                this.setState({ loading: false });
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                alert(errorCode, errorMessage);
+            });
     };
 
     render() {
         return (
             <>
+                {this.state.isLogin ? <div className="welcomeUser" style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: -50,
+                    right: 0,
+                    background: '#598c5f',
+                    zIndex: 10000,
+                    textAlign: 'center',
+                    padding: '10px 0'
+                }}>
+                    <p style={{ color: '#fff' }}>Welcome {this.state.username}</p>
+                </div> : null}
+
                 <header className="header1">
 
                     <div className="container-menu-header">
@@ -60,7 +121,7 @@ class Navbar extends React.Component {
                             <div className="topbar-child2">
                                 <span className="topbar-email">
                                     youganeid@gmail.com
-            </span>
+                                </span>
 
                             </div>
                         </div>
@@ -99,10 +160,16 @@ class Navbar extends React.Component {
                             <div className="header-icons">
                                 {this.state.isLogin ?
                                     <>
-                                        <a href="#" className="header-wrapicon1 dis-block">
+                                        <p onClick={() => {
+                                            this.state.profileScale ? this.setState({ profileScale: false }) : this.setState({ profileScale: true, cartScale: false })
+                                        }} className="header-wrapicon1 dis-block">
                                             <img src="images/icons/icon-header-01.png" className="header-icon1" alt="ICON" />
-                                        </a>
+                                        </p>
                                         <span className="linedivide1"></span>
+                                        <div className="profilePage" style={{ transform: `scale(${this.state.profileScale ? '1' : '0'})` }}>
+                                            <p>Profile</p>
+                                            <button onClick={() => firebase.auth().signOut()} className='signoutBtn'>SIGN OUT</button>
+                                        </div>
                                     </>
                                     : (
                                         <>
@@ -115,7 +182,8 @@ class Navbar extends React.Component {
                                             <span className="linedivide1"></span>
 
                                             <div className="registerPage" style={{ transform: `scale(${this.state.registerScale ? '1' : '0'})` }}>
-                                                <p>Create an account</p>
+                                                {this.state.loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> :
+                                                    <p>Create an account</p>}
                                                 <form onSubmit={this.submitRegister}>
                                                     <input type="text" placeholder="Email"
                                                         value={this.state.inputEmailRegister}
@@ -128,6 +196,10 @@ class Navbar extends React.Component {
                                                     <input type="text" placeholder="Name"
                                                         value={this.state.inputNameRegister}
                                                         name='inputNameRegister'
+                                                        onChange={this.registerOnChange} />
+                                                    <input type="number" placeholder="Phone"
+                                                        value={this.state.inputPhoneRegister}
+                                                        name='inputPhoneRegister'
                                                         onChange={this.registerOnChange} />
                                                     <button>Register</button>
                                                 </form>
@@ -142,7 +214,9 @@ class Navbar extends React.Component {
                                             <span className="linedivide1"></span>
 
                                             <div className="registerPage" style={{ transform: `scale(${this.state.signInScale ? '1' : '0'})` }}>
-                                                <p>Sign in to your account</p>
+                                                {this.state.loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> :
+                                                    <p>Sign in to your account</p>}
+
                                                 <form onSubmit={this.submitSignin}>
                                                     <input type="text" placeholder="Email"
                                                         value={this.state.inputEmailSignin}
@@ -162,7 +236,7 @@ class Navbar extends React.Component {
 
 
                                 <div className="header-wrapicon2" onClick={() => {
-                                    this.state.cartScale ? this.setState({ cartScale: false }) : this.setState({ cartScale: true, registerScale: false, signInScale: false })
+                                    this.state.cartScale ? this.setState({ cartScale: false }) : this.setState({ cartScale: true, registerScale: false, signInScale: false, profileScale: false })
                                 }}>
                                     <img src="images/icons/icon-header-02.png" className="header-icon1 js-show-header-dropdown"
                                         alt="ICON" />
@@ -249,17 +323,18 @@ class Navbar extends React.Component {
                     {/* <!-- Header Mobile --> */}
                     <div className="wrap_header_mobile">
                         {/* <!-- Logo moblie --> */}
-                        <a href="index.html" className="logo-mobile">
+                        <a href='./index.html'
+                            className="logo-mobile">
                             <img src="images/icons/logo.png" alt="IMG-LOGO" />
                         </a>
+
+
+
 
                         {/* <!-- Button show menu --> */}
                         <div className="btn-show-menu">
                             {/* <!-- Header Icon mobile --> */}
                             <div className="header-icons-mobile">
-                                <a href="#" className="header-wrapicon1 dis-block">
-                                    <img src="images/icons/icon-header-01.png" className="header-icon1" alt="ICON" />
-                                </a>
 
                                 <span className="linedivide2"></span>
 
@@ -390,6 +465,10 @@ class Navbar extends React.Component {
                                 <li className="item-menu-mobile">
                                     <a href="contact.html">Contact</a>
                                 </li>
+
+                                {this.state.isLogin ? <li className="item-menu-mobile signoutmobile">
+                                    <p onClick={() => firebase.auth().signOut()}>SIGN OUT</p>
+                                </li> : null}
                             </ul>
                         </nav>
                     </div>
