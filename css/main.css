@@ -861,12 +861,12 @@ li.sale-noti>a {
   -o-transition: all 0.3s;
   -moz-transition: all 0.3s;
 
-  transform-origin: top right;
-  -webkit-transform: scale(0);
+   transform-origin: top right;
+  /*-webkit-transform: scale(0);
   -moz-transform: scale(0);
   -ms-transform: scale(0);
   -o-transform: scale(0);
-  transform: scale(0);
+  transform: scale(0); */
 }
 
 .show-header-dropdown {
@@ -1076,8 +1076,8 @@ li.sale-noti>a {
 .wrap-side-menu {
   width: 100%;
   background-color: white;
-  display: none;
   border-top: 1px solid #ececec;
+  transition:.3s;
 }
 
 .side-menu {
@@ -1096,12 +1096,17 @@ li.sale-noti>a {
   background-color: #e65540;
 }
 
-.side-menu .main-menu>li>a {
+.side-menu .main-menu>li>a ,.signoutmobile {
   padding-left: 20px;
   font-family: Montserrat-Regular;
   font-size: 15px;
   color: white;
   line-height: 2.86;
+  cursor: pointer;
+}
+
+.signoutmobile p{
+  color:white;
 }
 
 .side-menu .main-menu>li {
@@ -1144,7 +1149,6 @@ li.sale-noti>a {
 
 .side-menu .sub-menu>li {
   padding-left: 12px;
-  padding-top:
 }
 
 .side-menu .sub-menu a:hover {
@@ -2436,6 +2440,65 @@ input.num-product::-webkit-inner-spin-button {
 
 
 /* GEN */
+
+/* loading */
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 27px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #e65540;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 6px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 6px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 26px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 45px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(19px, 0);
+  }
+}
+/* end loading */
+
 .all-page {
   display: block;
   transition: .3s;
@@ -2448,22 +2511,27 @@ input.num-product::-webkit-inner-spin-button {
 }
 
 .registerPage {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  background: #fff;
+  border:2px solid #333;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   flex-direction: column;
+  position: absolute;
+  top:55px;
+  padding: 10px 0;
+  transition:.3s;
+  transform-origin: top;
 }
 
 .registerPage p {
-  font-size: 3rem;
   font-weight: bold;
+  font-size: 1.5em;
+  text-align: center;
 }
 
 .registerPage form {
-  width: 50%;
-  height: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -2472,29 +2540,72 @@ input.num-product::-webkit-inner-spin-button {
 .registerPage form input {
   border-bottom: 2px solid #999 !important;
   transition: .3s;
-  width: 300px;
   margin: 10px auto;
   padding: 5px 5px;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }
 
 .registerPage form input:focus {
   border-bottom: 2px solid #333 !important;
 }
 
-.btnSign {
-  display: flex;
-  justify-content: space-around;
-  width: 300px;
-  margin: 20px auto;
-}
-
-.btnSign button {
+.registerPage button {
   border: 2px solid #333;
   padding: 10px 20px;
   transition: .3s;
+  margin-top: 10px;
 }
 
-.btnSign button:hover {
+.registerPage button:hover {
   color: #fff;
   background: #333;
+}
+
+.profilePage {
+  width: 100%;
+  background: #fff;
+  border:2px solid #333;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  margin-top: 90px;
+  padding: 10px 0;
+  transition:.3s;
+  transform-origin: top;
+}
+
+.profilePage .signoutBtn{
+  margin-top: 20px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.profilePage .signoutBtn:hover{
+  transform-origin: top;
+  transform:scale(.9);
+}
+
+.welcomeUser{
+  animation: welcomeUser 3s ;
+}
+
+@keyframes welcomeUser{
+  0%{
+    top:-50px;
+  }
+  30%{
+    top:0;
+  }
+  70%{
+    top:0;
+  }
+  100%{
+    top:-50px;
+  }
 }
